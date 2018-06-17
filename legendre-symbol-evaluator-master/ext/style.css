@@ -1,0 +1,40 @@
+body {
+    max-width: 50em;
+    margin: 1em auto;
+    padding: 0em 3em;
+    line-height: 2em;
+}
+
+dl {
+    width: auto;
+}
+
+dt {
+    font-weight: bold;
+    margin-top: 0.2em;
+    border-top: 1px solid black;
+}
+
+dd {
+    margin-left: 0em;
+}
+
+#results ol {
+    list-style: none;
+    margin-left: 1em;
+    padding-left: 1em;
+    border-left: 1px solid #eee;
+}
+
+#content {
+    float: left;
+}
+
+#instructions {
+    float: right;
+    max-width: 25em;
+}
+
+#x, #y {
+    width: 5em;
+}

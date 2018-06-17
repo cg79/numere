@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+
+<body>
+    <p>Try to change the names.</p>
+    <div ng-app="myApp" ng-controller="myCtrl">
+        First Name:
+        <input type="text" ng-model="a1">
+        <br> Last Name:
+        <input type="text" ng-model="a2">
+        <input type="text" ng-model="a3">
+        <input type="button" ng-click="findInMatrix()" value="Find in matrix" />
+
+        <br/>
+        <br> Full Name: {{a1 + " " + a2}}
+        <a ng-click="mul()">inmultire</a>
+        <ul class="tasks">
+            <li ng-repeat="task in rez" ng-class="{done: task.done}">
+                {{task}}
+            </li>
+        </ul>
+        <input type="button" ng-click="createMatrix()" value="mattt">matrix</input>
+        <br/>
+        <input type="button" ng-click="mul35()" value="mul35" />
+        <table>
+            <tbody>
+                <tr ng-repeat="el in mul35Result track by $index">
+                    <td >
+                        <span ng-click="findInMatrixByValue(el)">{{el}}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- {{matrix}} -->
+        <table>
+            <tbody>
+                <tr ng-repeat="row in matrix track by $index">
+                    <td ng-repeat="cell in row track by $index">
+                        <span class="{{cell.s}}">{{cell.v}}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope) {
+        $scope.a1 = 7;
+        $scope.a2 = 11;
+        $scope.findInMatrix = function(n) {
+            if(!n){
+                n = $scope.a3;    
+            }
+            
+            var m = $scope.matrix;
+            for (var i = 0; i < m.length; i++) {
+                var L = m[i];
+                for (var j = 0; j < L.length; j++) {
+                    m[i][j].s = 'cell';
+                    if (m[i][j].v == n) {
+                        m[i][j].s = 'cell found';
+                    }
+                }
+            }
+        }
+        $scope.findInMatrixByValue =function(el){
+            var x= 0;
+            $scope.findInMatrix(el.p + x);
+        }
+        $scope.pow = function(baza, putere, moduloN) {
+            //debugger;
+            if (putere === 1)
+                return baza % moduloN;
+
+            i = 1;
+            var rez = baza;
+            while (i * 2 < putere) {
+                rez = (rez * rez) % moduloN;
+                i = i * 2;
+            }
+            return rez * $scope.pow(baza, putere - i, moduloN) % moduloN;
+        }
+
+        $scope.mul35 = function(n) {
+            if(!n){
+                n = parseInt($scope.a1) * parseInt($scope.a2);
+            }
+            var a = 1;
+            var p=1;
+            var rez = [];
+            while(a<n/2){
+                a = a+2;
+                p = (p * a)% n;
+                rez.push({
+                    a:a,
+                    p:p
+                })    
+            }
+            $scope.mul35Result = rez;
+            return rez;
+        }
+
+        $scope.createMatrix = function() {
+            var n = parseInt($scope.a1) * parseInt($scope.a2);
+            var mat = [];
+            for (var i = 2; i < n; i++) {
+                mat[i - 2] = [];
+                for (var j = 1; j < n; j++) {
+                    mat[i - 2][j - 1] = { v: $scope.pow(i, j, n), s: "cell" }
+                }
+            }
+            $scope.matrix = mat;
+            return mat;
+        }
+
+        $scope.mul = function() {
+            var rez = [];
+            var n = parseInt($scope.a1) * parseInt($scope.a2);
+            rez.push(n);
+            console.log(n);
+
+
+
+            var index = 4;
+
+
+
+            var a = index - 1;
+            var b = index + 1;
+            var ab = n - a * b;
+            rez.push(ab);
+            console.log(ab);
+            while (ab > 0) {
+                // debugger;
+                index = index + 4;
+                a = index - 1;
+                b = index + 1;
+                ab = n - a * b;
+
+                rez.push(ab);
+                console.log(ab);
+            }
+            $scope.rez = rez;
+            return rez;
+
+        }
+
+    });
+    </script>
+</body>
+<style>
+.cell {
+    padding: 5px;
+}
+
+.found {
+    background-color: green;
+    font-weight: bold;
+}
+</style>
+
+</html>

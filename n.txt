@@ -1,0 +1,3 @@
+var n = 7*11; console.log(n); var p = 1;  var index = 1; var a = 2; while(index<25){index++; p = (p *a * (a+1)) % n; a = a+2; console.log(p); }
+
+39^ 76 mod 77 = 60

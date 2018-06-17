@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html manifest="legendre-symbol-evaluator.appcache">
+  <head>
+    <title>Legendre symbol evaluator</title>
+    <link href="ext/app-icon.png" rel="apple-touch-icon">
+    <link href="ext/style.css" rel="stylesheet" type="text/css">
+    <script src="ext/jquery.js" type="text/javascript"></script>
+    <script src="ext/jquery-ui.js" type="text/javascript"></script>
+    <script src="ext/legendre.js" type="text/javascript"></script>
+    <script src="ext/display-legendre.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <noscript>
+      This page requires JavaScript to be enabled in order to work.
+    </noscript>
+    <h1 id="title">Legendre symbol evaluator</h1>
+    <p id="about-link">(<a href="about.html">about</a>)</p>
+    <div id="instructions">
+      <h2>Properties of the
+        <a href="http://mathworld.wolfram.com/LegendreSymbol.html">
+          Legendre symbol
+        </a>
+      </h2>
+      <p>
+        <span id="p-odd-prime"><i>p</i> is an odd prime</span>,
+        <span id="a-not-congruent-p"><i>a</i> &#x2262; 0 (mod <i>p</i>)</span>
+        and <i>b</i> &#x2262; 0 (mod <i>p</i>),
+        and <i>q</i> &ne; <i>p</i> is an odd prime.
+      </p>
+
+      <dl>
+        <dt id="congruent-numbers">Congruent numbers</dt>
+        <dd>
+          If <i>a</i> &equiv; <i>b</i> (mod <i>p</i>) then (<i>a</i> | <i>p</i>)
+          = (<i>b</i> | <i>p</i>)
+        </dd>
+
+        <dt id="square-numbers">Square numbers</dt>
+        <dd>
+          (<i>a</i><sup>2</sup> | <i>p</i>) = 1
+        </dd>
+
+        <dt id="composite-numbers">Composite numbers</dt>
+        <dd>
+          (<i>ab</i> | <i>p</i>) = (<i>a</i> | <i>p</i>) (<i>b</i> | <i>p</i>)
+        </dd>
+
+        <dt id="quadratic-character--1">Quadratic character of -1</dt>
+        <dd>
+          (-1 | <i>p</i>) = (-1)<sup>(<i>p</i> - 1) / 2</sup>
+        </dd>
+
+        <dt id="quadratic-character-2">Quadratic character of 2</dt>
+        <dd>
+          (2 | <i>p</i>) = (-1)<sup>(<i>p</i><sup>2</sup> - 1) / 8</sup>
+        </dd>
+
+        <dt id="law-quadratic-reciprocity-1">Law of quadratic reciprocity (1)</dt>
+        <dd>
+          If <i>p</i> &#x2262; 1 (mod 4) or <i>q</i> &#x2262; 1 (mod 4)
+          then (<i>p</i> | <i>q</i>) = (<i>q</i> | <i>p</i>)
+        </dd>
+
+        <dt id="law-quadratic-reciprocity-2">Law of quadratic reciprocity (2)</dt>
+        <dd>
+          If <i>p</i> &#x2262; <i>q</i> &#x2262; 3 (mod 4)
+          then (<i>p</i> | <i>q</i>) = -(<i>q</i> | <i>p</i>)
+        </dd>
+      </dl>
+    </div>
+    <div id="content">
+      <h2>Evaluator</h2>
+      <form action="javascript:void(0);" id="form">
+        <p>
+          (<input id="x" type="number" value="2310"> |
+          <input id="y" type="number" value="13381">)
+          <input type="submit" value="Evaluate">
+        </p>
+      </form>
+      <div id="results"></div>
+    </div>
+    <div id="byline">
+      <p>By <a href="http://sean.mcgivern.me.uk/">Sean McGivern</a></p>
+    </div>
+  </body>
+</html>
