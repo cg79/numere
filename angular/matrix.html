@@ -1,313 +1,415 @@
 <!DOCTYPE html>
 <html>
-<script src="angular.js"></script>
-<link rel="stylesheet" href="bootstrap.min.css">
-<title>Hello, world!</title>
+  <script src="angular.js"></script>
+  <link rel="stylesheet" href="bootstrap.min.css" />
+  <title>Hello, world!</title>
 
-<body>
+  <body>
     <div ng-app="myApp" ng-controller="myCtrl">
-        A:
-        <input type="text" ng-model="aValue">
-        B:
-        <input type="text" ng-model="bValue">
-        check n
-        <input type="button" ng-click="checkN()" value="check n">
+      A:
+      <input type="text" ng-model="aValue" />
+      B:
+      <input type="text" ng-model="bValue" />
+      check n
+      <input type="button" ng-click="checkN()" value="check n" />
 
-        <input type="button" ng-click="creatematrix()" value="matrix">
+      <input type="button" ng-click="creatematrix()" value="matrix" />
 
-        <br> N:
-        <input type="text" ng-model="findValue">
-        <input type="button" ng-click="findNumber()" value="find Value">
-        <br>
-        
-        <div class="scroll">
-            <div class="row dib" ng-repeat="items in matrix track by $index">
-                <div class="col " ng-repeat="item in items track by $index">
-                    <button class="{{item.css}}" ng-click="startpow(item.val)">{{item.val}}</button>
-                </div>
-            </div>
+      <br />
+      <label id="mulmodulo">dd</label>
+      N:
+      <input type="text" ng-model="findValue" />
+      <input type="button" ng-click="findNumber()" value="find Value" />
+      <input
+        type="button"
+        ng-click="getPairsModuloN()"
+        value="getPairsModuloN"
+      />
+
+      <br />
+
+      <div class="scroll">
+        <div class="row dib" ng-repeat="items in matrix track by $index">
+          <div class="col" ng-repeat="item in items track by $index">
+            <button
+              class="{{item.css}}"
+              ng-click="startpow(item.val)"
+              ng-mouseover="mouseOver(item)"
+              ng-right-click="mul2Numbers(item.val)"
+            >
+              {{item.val}}
+            </button>
+          </div>
         </div>
+      </div>
 
-        <input type="button" ng-click="createMultiplicationmatrix()" value="mulmatrix">
-        <input type="text" ng-model="findMulValue">
-        <input type="button" ng-click="findMulNumber()" value="find Value">
-        <div class="scroll">
-            <div class="row dib" ng-repeat="items in mul_matrix track by $index">
-                <div class="col {{item.css}}" ng-repeat="item in items track by $index">
-                    {{item.val}}
-                </div>
-            </div>
+      <div>
+        <label>{{position}}</label>
+      </div>
+
+      <input
+        type="button"
+        ng-click="createMultiplicationmatrix()"
+        value="mulmatrix"
+      />
+      <input type="text" ng-model="findMulValue" />
+      <input type="button" ng-click="findMulNumber()" value="find Value" />
+      <div class="scroll">
+        <div class="row dib" ng-repeat="items in mul_matrix track by $index">
+          <div
+            class="col {{item.css}}"
+            ng-repeat="item in items track by $index"
+          >
+            {{item.val}}
+          </div>
         </div>
-
-
+      </div>
     </div>
     <script>
-    var app = angular.module('myApp', []);
-    app.controller('myCtrl', function($scope) {
+      var app = angular.module("myApp", []);
+      app.directive("ngRightClick", function ($parse) {
+        return function (scope, element, attrs) {
+          var fn = $parse(attrs.ngRightClick);
+          element.bind("contextmenu", function (event) {
+            scope.$apply(function () {
+              event.preventDefault();
+              fn(scope, { $event: event });
+            });
+          });
+        };
+      });
+      app.controller("myCtrl", function ($scope) {
         $scope.firstName = "John";
         $scope.lastName = "Doe";
         $scope.matrix = [];
 
-        $scope.startpow = function(val){
-            var a = parseInt($scope.aValue);
-            var b = parseInt($scope.bValue);
-            var n = a*b;
+        $scope.startpow = function (val) {
+          var a = parseInt($scope.aValue);
+          var b = parseInt($scope.bValue);
+          var n = a * b;
 
-            var x = parseInt(val);
-            var npatratmod = (x*x) % n;
-            $scope.findNumber(npatratmod.toString());
-        }
+          var x = parseInt(val);
+          var npatratmod = (x * x) % n;
+          $scope.findNumber(npatratmod.toString());
+        };
+
+        $scope.mouseOver = function (item) {
+          console.log(item);
+          $scope.position = JSON.stringify(item);
+        };
+
+        $scope.getPairsModuloN = function () {
+          var result = [];
+
+          var val = parseInt($scope.findValue);
+          var a = parseInt($scope.aValue);
+          var b = parseInt($scope.bValue);
+          var n = a * b;
+
+          var x = 2;
+          var y = (n + 1) / 2;
+
+          var obj = { x, y };
+
+          result.push(obj);
+
+          for (var i = 3; i < n; i++) {
+            obj.x = (obj.x * 2) % n;
+            obj.y = (obj.y * y) % n;
+            result.push({x: obj.x, y: obj.y});
+          }
+
+          console.log(result);
+        };
+
         function gcd(a, b) {
-            if (b) {
-                return gcd(b, a % b);
-            } else {
-                return Math.abs(a);
-            }
+          if (b) {
+            return gcd(b, a % b);
+          } else {
+            return Math.abs(a);
+          }
         }
 
         function pow(baza, putere, moduloN) {
-            //debugger;
-            if (putere === 1)
-                return baza % moduloN;
+          //debugger;
+          if (putere === 1) return baza % moduloN;
 
-            i = 1;
-            var rez = baza;
-            while (i * 2 < putere) {
-                rez = (rez * rez) % moduloN;
-                i = i * 2;
-            }
-            return rez * pow(baza, putere - i, moduloN) % moduloN;
+          i = 1;
+          var rez = baza;
+          while (i * 2 < putere) {
+            rez = (rez * rez) % moduloN;
+            i = i * 2;
+          }
+          return (rez * pow(baza, putere - i, moduloN)) % moduloN;
         }
-        $scope.creatematrix = function() {
-            var a = parseInt($scope.aValue);
-            var b = parseInt($scope.bValue);
-            
 
-            var n = a*b;
-            console.log(n);
+        function m2(n) {
+          var j = (n + 1) / 2;
+          var r = (j * j) % n;
+          return r;
+        }
+        $scope.creatematrix = function () {
+          var a = parseInt($scope.aValue);
+          var b = parseInt($scope.bValue);
 
-            var mat = [];
-            for (var i = 0; i < n; i++) {
-                mat[i] = [];
-                mat[i][0] = {
-                    val: i,
-                    css: "mar"
+          var n = a * b;
+          $scope.n = n;
+          console.log(n);
+
+          var mat = [];
+          for (var i = 0; i < n; i++) {
+            mat[i] = [];
+            mat[i][0] = {
+              val: i,
+              css: "mar",
+            };
+            for (var j = 0; j < n; j++) {
+              if (i === 0) {
+                mat[i][j] = {
+                  val: j,
+                  css: "mar",
                 };
-                for (var j = 0; j < n; j++) {
-                    if (i === 0) {
-                        mat[i][j] = {
-                            val: j,
-                            css: "mar"
-                        }
-                    } else {
-                        if (j > 0) {
-                            var mResult = pow(i, j, n);
-                            mat[i].push({
-                                val: mResult,
-                                css: ""
-                            });
-                        }
-                    }
+              } else {
+                if (j > 0) {
+                  var mResult = pow(i, j, n);
+                  mat[i].push({
+                    val: mResult,
+                    css: "",
+                    i,
+                    j,
+                  });
                 }
+              }
             }
-            $scope.matrix = mat;
-            checkMod(n);
+          }
+          $scope.matrix = mat;
+          // checkMod(n);
+
+          $scope.findValue = m2(n).toString();
+          $scope.findNumber();
+        };
+        function stepsMod(n) {}
+
+        function isInList(arr, nr) {
+          return arr.indexOf(nr) > -1;
         }
-        function stepsMod(n){
 
-        }
+        $scope.nm1 = null;
+        $scope.nm2 = null;
+        $scope.mul2Numbers = function (val) {
+          debugger;
+          if (!$scope.nm1) {
+            $scope.nm1 = val;
+            return;
+          }
+          if (!$scope.nm2) {
+            $scope.nm2 = val;
+          }
+          var p = ($scope.nm1 * $scope.nm2) % $scope.n;
+          document.getElementById("mulmodulo").innerText =
+            $scope.nm1 + " * " + $scope.nm2 + " % " + $scope.n + " = " + p;
+          $scope.findValue = p.toString();
+          $scope.findNumber();
 
-        function isInList(arr,nr){
-        	return arr.indexOf(nr)>-1;
-        }
+          $scope.nm1 = 0;
+          $scope.nm2 = 0;
+        };
 
-        $scope.findNumber = function(x) {
-            var txt = x || $scope.findValue;
-            var txtArray = txt.trim().split(",");
+        $scope.findNumber = function (x) {
+          var txt = x || $scope.findValue;
+          var txtArray = txt.trim().split(",");
 
-            var nrToFind = txtArray.map(it => parseInt(it));
+          var nrToFind = txtArray.map((it) => parseInt(it));
 
-            var mat = $scope.matrix;
-            var n = mat.length;
+          var mat = $scope.matrix;
+          var n = mat.length;
 
-            for (var i = 0; i < n; i++) {
-                for (var j = 0; j < n - 1; j++) {
-                    if (isInList(nrToFind, mat[i][j].val)) {
-                        mat[i][j].css = 'da';
-                    } else {
-                        mat[i][j].css = '';
-                    }
-                }
+          for (var i = 0; i < n; i++) {
+            for (var j = 0; j < n - 1; j++) {
+              if (isInList(nrToFind, mat[i][j].val)) {
+                mat[i][j].css = "da";
+              } else {
+                mat[i][j].css = "";
+              }
             }
-        }
+          }
+        };
 
-        $scope.findMulNumber = function() {
-            var txt = $scope.findMulValue;
-            var txtArray = txt.trim().split(",");
+        $scope.findMulNumber = function () {
+          var txt = $scope.findMulValue;
+          var txtArray = txt.trim().split(",");
 
-            var nrToFind = txtArray.map(it => parseInt(it));
+          var nrToFind = txtArray.map((it) => parseInt(it));
 
-            var mat = $scope.mul_matrix;
-            var n = mat.length;
+          var mat = $scope.mul_matrix;
+          var n = mat.length;
 
-            for (var i = 0; i < n; i++) {
-                for (var j = 0; j < n - 1; j++) {
-                    if (isInList(nrToFind, mat[i][j].val)) {
-                        mat[i][j].css = 'da';
-                    } else {
-                        mat[i][j].css = '';
-                    }
-                }
+          for (var i = 0; i < n; i++) {
+            for (var j = 0; j < n - 1; j++) {
+              if (isInList(nrToFind, mat[i][j].val)) {
+                mat[i][j].css = "da";
+              } else {
+                mat[i][j].css = "";
+              }
             }
-        }
+          }
+        };
 
-        $scope.createMultiplicationmatrix = function() {
-            var n = $scope.nValue;
-            var mat = [];
-            for (var i = 0; i < n; i++) {
-                mat[i] = [];
-                mat[i][0] = {
-                    val: i,
-                    css: "mar"
+        $scope.createMultiplicationmatrix = function () {
+          var a = parseInt($scope.aValue);
+          var b = parseInt($scope.bValue);
+
+          var n = a * b;
+          console.log(n);
+
+          var mat = [];
+          for (var i = 0; i < n; i++) {
+            mat[i] = [];
+            mat[i][0] = {
+              val: i,
+              css: "mar",
+            };
+            for (var j = 0; j < n; j++) {
+              if (i === 0) {
+                mat[i][j] = {
+                  val: j,
+                  css: "mar",
                 };
-                for (var j = 0; j < n; j++) {
-                    if (i === 0) {
-                        mat[i][j] = {
-                            val: j,
-                            css: "mar"
-                        }
-                    } else {
-                        if (j > 0) {
-                            var mResult = (i*j) %n;
-                            mat[i].push({
-                                val: mResult,
-                                css: ""
-                            });
-                        }
-                    }
+              } else {
+                if (j > 0) {
+                  var mResult = (i * j) % n;
+                  mat[i].push({
+                    val: mResult,
+                    css: "",
+                    i,
+                    j,
+                  });
                 }
+              }
             }
-            $scope.mul_matrix = mat;
+          }
+          $scope.matrix = mat;
+          // checkMod(n);
+
+          $scope.findValue = m2(n).toString();
+          $scope.findNumber();
+        };
+
+        function isnOriNPlusunu(n) {
+          var s = Math.sqrt(n) << 0;
+          if (s * (s + 1) == n) {
+            console.log(s);
+            return true;
+          } else {
+            return false;
+          }
         }
 
-        function isnOriNPlusunu(n){
-            var s = Math.sqrt(n)<<0;
-            if(s * (s+1) == n){
-                console.log(s);
-                return true;
-            }else{
-                return false;                               
+        function nMinusxorixplus1(n) {
+          var r = [];
+          var i = 2;
+          var x = 1;
+          while (x > 0) {
+            x = n - i * (i + 1);
+            if (x > 0) {
+              r.push(x);
             }
+            i = i + 2;
+          }
+          return r;
         }
 
-        function nMinusxorixplus1(n){
-            var r = [];
-            var i = 2;
-            var x= 1;
-            while(x>0){
-                x = n- (i*(i+1));
-                if(x>0){
-                    r.push(x);
-                }
-                i = i+2;
+        function nMinusxpatrat(n) {
+          var r = [];
+          var i = 1;
+          var x = 1;
+          while (x > 0) {
+            x = n - i * i;
+            if (x > 0) {
+              r.push(x);
+              console.log(number + " " + x + " " + gcd(number, x));
             }
-            return r;
+            i = i + 1;
+          }
+          return r;
         }
 
-        function nMinusxpatrat(n){
-            var r = [];
-            var i = 1;
-            var x = 1;
-            while(x>0){
-                x =  n- (i*i);
-                if(x>0){
-                    r.push(x);
-                    console.log(number + " " + x + " " + gcd(number,x));
-                }
-                i = i+1;
-            }
-            return r;
+        printArray = (arr) => {
+          var r = "";
+          for (var i = 0; i < arr.length; i++) {
+            r += arr[i] + "\t";
+          }
+          console.log(r);
+        };
+
+        var number = 0;
+        $scope.checkN = function () {
+          var a = parseInt($scope.aValue);
+          var b = parseInt($scope.bValue);
+
+          var n = a * b;
+          console.log(n);
+          number = n;
+          checkMod(n);
+        };
+
+        function checkMod(n) {
+          var jumate = (n + 1) / 2;
+          var modJumate = (jumate * jumate) % n;
+          console.log(modJumate);
+          var d = (modJumate * modJumate) % n;
+          console.log(d);
+          var i = 0;
+          // while(d!= modJumate && i<10){
+          //     d = (d*d)%n;
+          //     console.log(d);
+          //     i++;
+          // }
+
+          // var min1 =modJumate-1;
+          //          for(var i=0;i<n;i++){
+          //              var x = n*i + min1;
+          //              if(x % 4 == 0){
+          //                  console.log(i + " " + x/4);
+          //                  if(isnOriNPlusunu(x/4)) {
+          //                      console.log("DAAAAAAAA");
+          //                  }
+
+          //              }
+
+          //          }
+          var a1 = nMinusxorixplus1(n);
+          var a2 = nMinusxpatrat(modJumate);
+          printArray(a1);
+          printArray(a2);
         }
-
-        printArray = (arr) =>{
-            var r ="";
-            for(var i=0;i<arr.length;i++){
-                 r+=  arr[i] + "\t"; 
-            }
-            console.log(r);
-        }
-
-var number = 0;
-        $scope.checkN = function(){
-             var a = parseInt($scope.aValue);
-            var b = parseInt($scope.bValue);
-            
-
-            var n = a*b;
-            console.log(n);
-            number = n;
-            checkMod(n);
-        }   
-
-        function checkMod(n){
-        	var jumate = (n+1)/2;
-        	var modJumate = (jumate*jumate)%n;
-        	console.log(modJumate);
-            var d = (modJumate*modJumate)%n;
-            console.log(d);
-            var i = 0;
-            // while(d!= modJumate && i<10){
-            //     d = (d*d)%n;
-            //     console.log(d);
-            //     i++;
-            // }
-            
-
-			// var min1 =modJumate-1;
-   //          for(var i=0;i<n;i++){
-   //              var x = n*i + min1;
-   //              if(x % 4 == 0){
-   //                  console.log(i + " " + x/4);
-   //                  if(isnOriNPlusunu(x/4)) {
-   //                      console.log("DAAAAAAAA");
-   //                  }
-                    
-   //              }
-                
-   //          }
-            var a1 =  nMinusxorixplus1(n);
-            var a2 =  nMinusxpatrat(modJumate);  
-            printArray(a1);
-            printArray(a2);
-        }
-    });
+      });
     </script>
-</body>
-<style>
-.scroll {
-    overflow-x: scroll;
-    overflow-y: scroll;
-    white-space: nowrap;
-    height: 600px;
-    .card {
-        display: inline-block;
+  </body>
+  <style>
+    .scroll {
+        overflow-x: scroll;
+        overflow-y: scroll;
+        white-space: nowrap;
+        height: 600px;
+        .card {
+            display: inline-block;
+        }
     }
-}
 
-.dib {
-    display: table-cell;
-    !important;
-}
+    .dib {
+        display: table-cell;
+        !important;
+    }
 
-.da {
-    background-color: blue;
-}
-.mar{
-	color: red;
-}
-.colx {
-    background-color: yellow;
-}
-</style>
-
+    .da {
+        background-color: rgb(44, 230, 20);
+    }
+    .mar{
+    	color: red;
+    }
+    .colx {
+        background-color: yellow;
+    }
+  </style>
 </html>
