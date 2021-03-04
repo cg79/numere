@@ -250,3 +250,21 @@ function store() {
 var storeObj = store();
 storeObj.add("unu");
 storeObj.getList();
+
+function nminus1(a,b) {
+  var n = a*b;
+
+  var j = (n+1)/2;
+  j = j*j %n;
+  if(j % 2 ==1) {
+    j*=2;
+  }
+  var x = j;
+  var c = 1;
+  while(x>0) {
+    x = x-c;
+    c = c+2;
+    console.log(x,  x*x - n);
+  }
+
+}

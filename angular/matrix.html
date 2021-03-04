@@ -33,7 +33,7 @@
           <div class="col" ng-repeat="item in items track by $index">
             <button
               class="{{item.css}}"
-              ng-click="startpow(item.val)"
+              ng-click="startpow(item, $event)"
               ng-mouseover="mouseOver(item)"
               ng-right-click="mul2Numbers(item.val)"
             >
@@ -46,6 +46,8 @@
       <div>
         <label>{{position}}</label>
       </div>
+
+      <input type="button" ng-click="xplus2Patrat()" value="xplus2Patrat" />
 
       <input
         type="button"
@@ -83,10 +85,29 @@
         $scope.lastName = "Doe";
         $scope.matrix = [];
 
-        $scope.startpow = function (val) {
+        $scope.selectedNumbers = [];
+
+        $scope.startpow = (item, event) => {
+          var val = item.val;
+
           var a = parseInt($scope.aValue);
           var b = parseInt($scope.bValue);
           var n = a * b;
+
+          if (event.shiftKey) {
+            // do this
+            item.css = "red";
+            $scope.selectedNumbers.push(item.val);
+
+            var y = 1;
+            for (var i = 0; i < $scope.selectedNumbers.length; i++) {
+              y = (y * $scope.selectedNumbers[i]) % n;
+            }
+
+            val = y;
+          } else {
+            $scope.selectedNumbers = [];
+          }
 
           var x = parseInt(val);
           var npatratmod = (x * x) % n;
@@ -116,7 +137,7 @@
           for (var i = 3; i < n; i++) {
             obj.x = (obj.x * 2) % n;
             obj.y = (obj.y * y) % n;
-            result.push({x: obj.x, y: obj.y});
+            result.push({ x: obj.x, y: obj.y });
           }
 
           console.log(result);
@@ -295,6 +316,41 @@
           $scope.findNumber();
         };
 
+        $scope.xplus2Patrat = function (mJumate, xpat) {
+          // 58, 71
+          debugger;
+          //(x + 2)^2 = m
+          //x^2 = n
+          //==> x^2 + 4x + 4 = m
+          //==> n + 4x = (m-4)
+
+          var a = parseInt($scope.aValue);
+          var b = parseInt($scope.bValue);
+          var n = a * b;
+
+
+          if (!mJumate) {
+            var txt = $scope.findValue;
+            var txtArray = txt.trim().split(",");
+            mJumate = parseInt(txtArray[0]);
+            xpat = parseInt(txtArray[1]);
+          }
+
+          var findModulo = mJumate - 4;
+          console.log(xpat + "  + 4x = ", findModulo);
+
+          //==> 4x = $scope
+
+          var patrux = n + findModulo - xpat;
+
+          console.log(' 4 * x = ', patrux );
+
+          var response = patrux/4;
+
+          console.log('Result is ', response);
+
+        };
+
         function isnOriNPlusunu(n) {
           var s = Math.sqrt(n) << 0;
           if (s * (s + 1) == n) {
@@ -404,6 +460,9 @@
 
     .da {
         background-color: rgb(44, 230, 20);
+    }
+    .red {
+      background-color: red;
     }
     .mar{
     	color: red;
